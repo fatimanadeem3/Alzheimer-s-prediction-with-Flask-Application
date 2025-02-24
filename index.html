@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alzheimer's Prediction</title>
+    
+    <style>
+        body {
+            background: linear-gradient(to right,#a0d2eb, #215db0);
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background:  #e5eaf5;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        h2 {
+            text-align: center;
+        }
+        label {
+            font-weight: bold;
+        }
+        input, select {
+    width: 100%; 
+    height: 40px; 
+    font-size: 16px; 
+    padding: 5px;
+    box-sizing: border-box; 
+}
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #151515;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .result-container {
+            margin-top: 20px;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .download-btn {
+            margin-top: 10px;
+            display: block;
+            text-align: center;
+            padding: 10px;
+            background: #28a745;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+        .download-btn:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Alzheimer's Prediction Form</h2>
+        <form id="predictionForm">
+            <label>Name:</label>
+            <input type="text" name="name" required>
+
+            <label>Gender:</label>
+            <select name="gender" required>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select>
+
+            <label>Age:</label>
+            <input type="number" name="age" required>
+
+            <label>Education Level:</label>
+            <select name="educationLevel" required>
+                <option value="primary">Primary</option>
+                <option value="secondary">Secondary</option>
+                <option value="higher">Higher</option>
+            </select>
+
+            <label>Physical Activity Level:</label>
+            <select name="physicalActivity" required>
+                <option value="1">Low</option>
+                <option value="2">Moderate</option>
+                <option value="3">High</option>
+            </select>
+
+            <label>Smoking Status:</label>
+            <select name="smokingStatus" required>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+
+            <label>Alcohol Consumption:</label>
+            <select name="alcoholConsumption" required>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+
+            <label>Diabetes:</label>
+            <select name="diabetes" required>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+
+            <label>Hypertension:</label>
+            <select name="hypertension" required>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+
+            <label>Cholesterol Level:</label>
+            <input type="number" name="cholesterolLevel" required>
+
+            <label>Family History of Alzheimer's:</label>
+            <select name="familyHistory" required>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+
+            <label>Cognitive Score:</label>
+            <input type="number" name="cognitiveScore" required>
+
+            <label>Depression Level:</label>
+            <input type="number" name="depressionLevel" required>
+
+            <label>Sleep Quality:</label>
+            <input type="number" name="sleepQuality" required>
+
+            <label>Dietary Habits:</label>
+            <input type="number" name="dietaryHabits" required>
+
+            <label>Air Pollution Exposure:</label>
+            <input type="number" name="airPollution" required>
+
+            <label>Genetic Risk Factor:</label>
+            <select name="geneticRisk" required>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+
+            <label>Social Engagement Level:</label>
+            <input type="number" name="socialEngagement" required>
+
+            <label>Stress Levels:</label>
+            <input type="number" name="stressLevels" required>
+
+            <button type="submit">Predict</button>
+        </form>
+
+        <div class="result-container" id="result"></div>
+        <a href="#" id="downloadLink" class="download-btn" style="display:none;">Download Report</a>
+    </div>
+
+    <script>
+        document.getElementById("predictionForm").onsubmit = function(event) {
+            event.preventDefault();
+            var formData = new FormData(event.target);
+
+            fetch("/predict", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.prediction) {
+                    document.getElementById("result").innerHTML = `
+                        <strong>Prediction:</strong> ${data.prediction} <br>
+                        <strong>Probability:</strong> ${data.probability.toFixed(2)}%`;
+
+                    document.getElementById("downloadLink").href = data.download_url;
+                    document.getElementById("downloadLink").style.display = "block";
+                } else {
+                    document.getElementById("result").innerHTML = "Error: " + data.error;
+                }
+            })
+            .catch(error => {
+                document.getElementById("result").innerHTML = "Error: " + error;
+            });
+        };
+    </script>
+</body>
+</html>
